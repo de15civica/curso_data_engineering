@@ -1,0 +1,373 @@
+version: 2
+
+sources:
+
+  - name: SQL_SERVER_DBO # name of the source 
+    database: ALUMNO15_DEV_BRONZE_DB # this is the name of our database
+    schema: SQL_SERVER_DBO # this is the schema our raw data lives in
+    loader: fivetran
+    description: >
+      Raw data or bronze stage for database = ALUMNO15_DEV_BRONZE_DB and schema = SQL_SERVER_DBO
+
+    quoting:
+      database: false
+      schema: false
+      identifier: false
+
+    tables:
+
+      - name: ADDRESSES
+        loaded_at_field: _fivetran_synced
+        description: Data that identify addresses.
+        columns:
+          - name: ADDRESS_ID
+            description: >
+              UUID for each unique address on platform.
+            data_tests:
+              - not_null
+              - unique  
+          - name: ZIPCODE
+            description: >
+              Zipcode for addres.
+            data_tests:
+              - not_null
+          - name: COUNTRY
+            description: >
+              Country for addres.
+            data_tests:
+              - not_null
+          - name: ADDRESS
+            description: >
+              Addres related to ADDRESS_ID.
+            data_tests:
+              - not_null
+          - name: STATE
+            description: >
+              State for country.
+            data_tests:
+              - not_null
+          - name: _FIVETRAN_DELETED
+            description: >
+              Addres has been removed or is otherwise missing from the source.
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: ['TRUE', null]
+          - name: _FIVETRAN_SYNCED
+            description: >
+              Date that the data in ADDRESSES was loaded.
+            data_tests:
+              - not_null
+
+      - name: EVENTS
+        description: Data that identify every event in the web page.
+        loaded_at_field: _fivetran_synced
+        columns:
+          - name: EVENT_ID
+            description: >
+              UUID for each unique event on platform.
+            data_tests:
+              - not_null
+              - unique
+          - name: PAGE_URL
+            description: >
+              URL that idendify a product.
+            data_tests:
+              - not_null
+              
+          - name: EVENT_TYPE
+            description: >
+              URL that idendify a product.
+            data_tests:
+              - not_null
+          - name: USER_ID
+            description: >
+              URL that idendify a product.
+            data_tests:
+              - not_null
+          - name: PRODUCT_ID
+            description: >
+              URL that idendify a product.
+            data_tests:
+              - not_null
+          - name: SESSION_ID
+            description: >
+              URL that idendify a product.
+            data_tests:
+              - not_null
+          - name: CREATED_AT
+            description: >
+              URL that idendify a product.
+            data_tests:
+              - not_null
+          - name: ORDER_ID
+            description: >
+              URL that idendify a product.
+            data_tests:
+              - not_null
+          - name: _FIVETRAN_DELETED
+            description: >
+              Addres has been removed or is otherwise missing from the source.
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: ['TRUE', null]
+          - name: _FIVETRAN_SYNCED
+            description: >
+              Date that the data in ADDRESSES was loaded.
+            data_tests:
+              - not_null
+
+      - name: ORDERS
+        description: Data related to customer orders
+        loaded_at_field: _FIVETRAN_SYNCED
+        columns:
+          - name: ORDER_ID
+            description: >
+              UUID for each unique order on the platform.
+            data_tests:
+              - not_null
+              - unique
+          - name: SHIPPING_SERVICE
+            description: >
+              Shipping service used for the order (e.g., UPS, FedEx).
+            data_tests:
+              - not_null
+          - name: SHIPPING_COST
+            description: >
+              Cost of shipping for the order in USD.
+            data_tests:
+              - not_null
+          - name: ADDRESS_ID
+            description: >
+              UUID of the shipping address for the order.
+            data_tests:
+              - not_null
+          - name: CREATED_AT
+            description: >
+              Timestamp when the order was created.
+            data_tests:
+              - not_null
+          - name: PROMO_ID
+            description: >
+              UUID of the promotion applied to the order.
+            data_tests:
+              - not_null
+          - name: ESTIMATED_DELIVERY_AT
+            description: >
+              Estimated timestamp for order delivery.
+            #data_tests:
+          - name: ORDER_COST
+            description: >
+              Cost of all products in the order for the order in USD.
+            data_tests:
+              - not_null  
+          - name: USER_ID
+            description: >
+              UUID of the user who placed the order.
+            data_tests:
+              - not_null
+          - name: ORDER_TOTAL
+            description: >
+              Total cost of the order including shipping and discounts.
+            data_tests:
+              - not_null
+          - name: DELIVERED_AT
+            description: >
+              Timestamp when the order was delivered.
+            #data_tests:
+          - name: TRACKING_ID
+            description: >
+              Tracking identifier for the order shipment.
+            data_tests:
+              - not_null
+          - name: STATUS
+            description: >
+              Current status of the order (e.g., shipped, delivered, preparing).
+            data_tests:
+              - not_null
+              - accepted_values:
+                  arguments:
+                    values: ['shipped', 'delivered', 'preparing']
+          - name: _FIVETRAN_DELETED
+            description: >
+              Indicates if the order has been removed or is missing from the source.
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: ['TRUE', null]
+          - name: _FIVETRAN_SYNCED
+            description: >
+             Timestamp when the data in ORDERS was last synced.
+            data_tests:
+              - not_null
+
+      - name: ORDER_ITEMS
+        description: Data detailing items within each order.
+        loaded_at_field: _FIVETRAN_SYNCED
+        columns:
+          - name: ORDER_ID
+            description: >
+              UUID of the order this item belongs to.
+            data_tests:
+              - not_null
+          - name: PRODUCT_ID
+            description: >
+              UUID of the product in the order.
+            data_tests:
+              - not_null
+          - name: QUANTITY
+            description: >
+              Quantity of the product ordered.
+            data_tests:
+              - not_null
+          - name: _FIVETRAN_DELETED 
+            description: >
+              Indicates if the order item has been removed or is missing from the source.
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: ['TRUE', null]
+          - name: _FIVETRAN_SYNCED
+            description: >
+             Timestamp when the data in ORDER_ITEMS was last synced.
+            data_tests:
+              - not_null
+
+      - name: PRODUCTS
+        loaded_at_field: _FIVETRAN_SYNCED
+        description: Catalog data for products available on the platform.
+        columns:
+          - name: PRODUCT_ID
+            description: >
+              UUID for each unique product on the platform.
+            data_tests:
+              - not_null
+              - unique
+          - name: PRICE
+            description: >
+              Price of the product.
+            data_tests:
+              - not_null
+          - name: NAME
+            description: >
+              Name of the product.
+            data_tests:
+              - not_null
+          - name: INVENTORY
+            description: >
+              Current inventory level for the product.
+            data_tests:
+              - not_null
+          - name: _FIVETRAN_DELETED
+            description: >
+              Indicates if the product has been removed or is missing from the source.
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: ['TRUE', null]
+          - name: _FIVETRAN_SYNCED
+            description: >
+             Timestamp when the data in PRODUCTS was last synced.
+            data_tests:
+              - not_null
+
+      - name: PROMOS
+        loaded_at_field: _FIVETRAN_SYNCED
+        description: Data for promotional offers and discounts.
+        columns:
+          - name: PROMO_ID
+            description: >
+              UUID for each unique promotion on the platform.
+            data_tests:
+              - not_null
+              - unique
+          - name: DISCOUNT
+            description: >
+              Discount amount or percentage for the promotion.
+            data_tests:
+              - not_null
+          - name: STATUS
+            description: >
+              Status of the promotion (e.g., inactive, active)
+            data_tests:
+              - not_null
+              - accepted_values:
+                  arguments:
+                    values: ['inactive', 'active']
+          - name: _FIVETRAN_DELETED
+            description: >
+              Indicates if the promo has been removed or is missing from the source.
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: ['TRUE', null]
+          - name: _FIVETRAN_SYNCED
+            description: >
+             Timestamp when the data in PROMOS was last synced.
+            data_tests:
+              - not_null
+
+      - name: USERS
+        loaded_at_field: _FIVETRAN_SYNCED
+        description: Data for registered users on the platform.
+        columns:
+          - name: USER_ID
+            description: >
+              UUID for each unique user on the platform.
+            data_tests:
+              - not_null
+              - unique
+          - name: UPDATED_AT
+            description: >
+              Timestamp when the user record was last updated.
+            data_tests:
+              - not_null
+          - name: ADDRESS_ID
+            description: >
+              UUID of the user's primary address.
+            data_tests:
+              - not_null
+          - name: LAST_NAME
+            description: >
+              Last name of the user.
+            data_tests:
+              - not_null
+          - name: CREATED_AT
+            description: >
+              Timestamp when the user account was created.
+            data_tests:
+              - not_null
+          - name: PHONE_NUMBER
+            description: >
+              Phone number of the user.
+            data_tests:
+              - not_null
+          - name: TOTAL_ORDERS
+            description: >
+              Total number of orders placed by the user.
+            data_tests:
+              - not_null
+          - name: FIRST_NAME
+            description: >
+              First name of the user.
+            data_tests:
+              - not_null
+          - name: EMAIL
+            description: >
+              Email address of the user.
+            data_tests:
+              - not_null
+              - unique
+          - name: _FIVETRAN_DELETED
+            description: >
+              Indicates if the user has been removed or is missing from the source.
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: ['TRUE', null]
+          - name: _FIVETRAN_SYNCED
+            description: >
+             Timestamp when the data in USERS was last synced.
+            data_tests:
+              - not_null
