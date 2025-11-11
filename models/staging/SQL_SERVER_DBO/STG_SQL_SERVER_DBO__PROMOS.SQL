@@ -12,7 +12,8 @@ WITH SRC_PROMOS AS (
 
 RENAMED_PROMOS AS (
     SELECT
-        MD5(PROMO_ID) AS PROMO_ID,
+        --MD5(PROMO_ID) AS PROMO_ID,
+        {{ dbt_utils.generate_surrogate_key(['PROMO_ID']) }} AS PROMO_ID,
         PROMO_ID AS PROMO_NAME,
         DISCOUNT AS DISCOUNT_AMOUNT_USD,
         STATUS,
@@ -25,7 +26,8 @@ SELECT * FROM RENAMED_PROMOS
 
 UNION ALL
 
-SELECT  MD5('no promo') AS PROMO_ID, 
+SELECT  --MD5('no promo') AS PROMO_ID, 
+        {{ dbt_utils.generate_surrogate_key(['\"no promo\"']) }} AS PROMO_ID,
         'no promo' AS PROMO_NAME, 
         0 AS DISCOUNT_AMOUNT_USD, 
         'active' AS STATUS, 

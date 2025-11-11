@@ -12,7 +12,8 @@ WITH SRC_ADDRESSES AS (
 
 RENAMED_COUNTRY AS (
     SELECT
-        MD5(LOWER(COUNTRY_NAME)) AS COUNTRY_ID,
+        --MD5(LOWER(COUNTRY_NAME)) AS COUNTRY_ID,
+        {{ dbt_utils.generate_surrogate_key(['COUNTRY_NAME']) }} AS COUNTRY_ID,
         COUNTRY_NAME
     FROM SRC_ADDRESSES
     )

@@ -25,7 +25,8 @@ sources:
               UUID for each unique address on platform.
             data_tests:
               - not_null
-              - unique  
+              - dbt_utils.not_empty_string
+              - unique 
           - name: ZIPCODE
             description: >
               Zipcode for addres.
