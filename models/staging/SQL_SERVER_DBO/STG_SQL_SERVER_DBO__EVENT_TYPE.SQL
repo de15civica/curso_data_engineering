@@ -12,8 +12,8 @@ WITH SRC_EVENTS AS (
 
 RENAMED_EVENT_TYPE AS (
     SELECT
-        --MD5(LOWER(SHIPPING_SERVICE_NAME)) AS EVENT_TYPE_ID,
-        {{ dbt_utils.generate_surrogate_key(['SHIPPING_SERVICE_NAME']) }} AS EVENT_TYPE_ID,
+        --MD5(LOWER(EVENT_TYPE_NAME)) AS EVENT_TYPE_ID,
+        {{ dbt_utils.generate_surrogate_key(['EVENT_TYPE_NAME']) }} AS EVENT_TYPE_ID,
         EVENT_TYPE_NAME
     FROM SRC_EVENTS
     )
